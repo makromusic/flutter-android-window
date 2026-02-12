@@ -13,12 +13,15 @@ class AndroidWindowPlugin : FlutterPlugin, ActivityAware {
   companion object {
     var messenger: BinaryMessenger? = null
     var activityClass: Class<Activity>? = null
+    var activity: Activity? = null
   }
 
   override fun onDetachedFromEngine(binding: FlutterPluginBinding) {}
   override fun onDetachedFromActivityForConfigChanges() {}
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {}
-  override fun onDetachedFromActivity() {}
+  override fun onDetachedFromActivity() {
+    activity = null
+  }
 
   override fun onAttachedToEngine(binding: FlutterPluginBinding) {
     pluginBinding = binding
@@ -29,5 +32,6 @@ class AndroidWindowPlugin : FlutterPlugin, ActivityAware {
     Pigeon.MainApi.setUp(pluginBinding.binaryMessenger, mainApi)
     messenger = pluginBinding.binaryMessenger
     activityClass = binding.activity.javaClass
+    activity = binding.activity
   }
 }

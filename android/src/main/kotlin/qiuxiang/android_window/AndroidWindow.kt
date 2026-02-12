@@ -39,11 +39,15 @@ class AndroidWindow(
       WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
     } else {
       @Suppress("Deprecation") WindowManager.LayoutParams.TYPE_TOAST
-    }, if (focusable) 0 else WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT
+    },
+    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED or
+      (if (focusable) 0 else WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE),
+    PixelFormat.TRANSLUCENT
   )
 
   fun open() {
-    engine.platformViewsController.attach(inflater.context, engine.renderer, engine.dartExecutor)
+    val context = AndroidWindowPlugin.activity ?: inflater.context
+    engine.platformViewsControllerDelegator.attach(context, engine.renderer, engine.dartExecutor)
     val floatingApi = AndroidWindowApi(this)
     Pigeon.AndroidWindowApi.setUp(engine.dartExecutor.binaryMessenger, floatingApi)
     layoutParams.gravity = Gravity.START or Gravity.TOP
